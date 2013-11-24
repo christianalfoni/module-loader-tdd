@@ -180,6 +180,7 @@ kinda breaks the concept
 - The loading of files is based on directory structuring. You can overwrite with "paths", but that just adds
 complexity
 - It is very complex with lots of functionality
+- Have not successfully accomplished code-coverage with it
 
 In RequireJS defense I am not using all the functionality and maybe the projects I work on would benefit more with
 a different structure etc, but that also indicates its complexity.
