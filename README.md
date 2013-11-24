@@ -141,7 +141,7 @@ modules.test('helloWorld', function (helloWorld) {
         // Deps are stubbed methods (Sinon JS), which lets us verify their usage
         // without actually executing the code
         assert(deps.logger.log.calledOnce); // Has the log method been called?
-        assert(deps.logger.log.calledWith('Hello world!'); // Was it called with the expected message?
+        assert(deps.logger.log.calledWith('Hello world!')); // Was it called with the expected message?
       }
     },
     'p.sayToWorld()': {
