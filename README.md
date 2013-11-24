@@ -26,8 +26,8 @@ and/or HTML content can be displayed while loading the scripts.
 
 ### The module 
 ```javascript
-// FILE: myDep.js
-modules.create('myDep', function () {
+// FILE: logger.js
+modules.create('logger', function () {
   'use strict';
   return {
     log: function (message) {
@@ -39,13 +39,13 @@ modules.create('myDep', function () {
 
 ### Adding dependencies
 ```javascript
-// FILE: myModule.js
-modules.create('myModule', function () {
+// FILE: helloWorld.js
+modules.create('helloWorld', function () {
   'use strict';
-  var myDep = this.dep('myDep');
+  var logger = this.dep('logger');
   return {
     hello: function () {
-      myDep.log('Hello world!');
+      logger.log('Hello world!');
     }
   };
 });
@@ -54,11 +54,11 @@ modules.create('myModule', function () {
 
 ### Creating private methods
 ```javascript
-// FILE: myModule.js
-modules.create('myModule', function () {
+// FILE: helloWorld.js
+modules.create('helloWorld', function () {
   'use strict';
   var p = this.privates, // the "p" variable is for conveniance
-      myDep = this.dep('myDep');
+      logger = this.dep('logger');
 
   p.sayToWorld = function (say) {
       return say + ' world!';
@@ -66,21 +66,21 @@ modules.create('myModule', function () {
   
   return {
     hello: function () {
-      myDep.log(p.sayToWorld('Hello'));
+      logger.log(p.sayToWorld('Hello'));
     }
   };
 });
 ```
-**Why create these private methods?** When developing TDD and functional a core concept is creating small input-output
-functions that are easily testable. In **module-loader** the context of the module has an object defined via
+**Why create these private methods?** When developing test-driven and functional, a core concept is creating small input-output
+functions that are easily testable. In **module-loader** the context of a module has an object defined via
 *this.privates*. You can register methods on this object. These are not available in the public interface returned
 by the module, but will be available when testing the module.
 
 An alternate convention is writing it like this:
 ```javascript
-modules.create('myModule', function () {
+modules.create('helloWorld', function () {
   'use strict';
-  var myDep = this.dep('myDep');
+  var logger = this.dep('logger');
 
   var p = this.privates = {
     sayToWorld: function (say) {
@@ -90,7 +90,7 @@ modules.create('myModule', function () {
   
   return {
     hello: function () {
-      myDep.log(p.sayToWorld('Hello'));
+      logger.log(p.sayToWorld('Hello'));
     }
   };
 });
@@ -108,8 +108,8 @@ modules.create('myModule', function () {
     <script src="src/myDep.js"></script>
     <script>
       modules.initialize(function () {
-         var myModule = this.dep('myModule');
-         myModule.hello(); // -> Hello world!
+         var helloWorld = this.dep('helloWorld');
+         helloWorld.hello(); // -> Hello world!
       });
     </script>
   </body>
@@ -126,22 +126,22 @@ tags based on available .js files in your source folder.
 
 ### Testing a module
 ```javascript
-// FILE: myModule-test.js
-modules.test('myModule', function (myModule) {
+// FILE: helloWorld-test.js
+modules.test('helloWorld', function (helloWorld) {
   'use strict';
-  var p = myModule.privates,
-      deps = myModule.deps;
-  buster.testCase('myModule test', {
+  var p = helloWorld.privates, // Available because we test the module
+      deps = helloWorld.deps; // Available because we test the module
+  buster.testCase('helloWorld test', {
     'hello()': {
       'is a function': function () {
-        assert.isFunction(myModule.hello);
+        assert.isFunction(helloWorld.hello);
       },
       'calls dependency with message': function () {
-        myModule.hello();
+        helloWorld.hello();
         // Deps are stubbed methods (Sinon JS), which lets us verify their usage
         // without actually executing the code
-        assert(deps.log.calledOnce); // Has the log method been called?
-        assert(deps.log.calledWith('Hello world!'); // What was the log method called with?
+        assert(deps.logger.log.calledOnce); // Has the log method been called?
+        assert(deps.logger.log.calledWith('Hello world!'); // Was it called with the expected message?
       }
     },
     'p.sayToWorld()': {
