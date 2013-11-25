@@ -13,6 +13,7 @@ until the dependency has been initialized
 - It supports concatinating all module files, compress and uglify wihtout breaking any code
 - Give good error indications if you are using it wrong
 - Freedom in naming modules (namespaces etc.)
+- Short stack trace
 
 ### Additions
 - A custom module context, giving access to setting private methods and deps that are only exposed during testing
@@ -181,6 +182,7 @@ kinda breaks the concept
 complexity
 - It is very complex with lots of functionality
 - Have not successfully accomplished code-coverage with it
+- Stack trace is way too long, and does not make much sense
 
 In RequireJS defense I am not using all the functionality and maybe the projects I work on would benefit more with
 a different structure etc, but that also indicates its complexity.
