@@ -42,7 +42,7 @@ modules.create('logger', function () {
 // FILE: helloWorld.js
 modules.create('helloWorld', function () {
   'use strict';
-  var logger = this.dep('logger');
+  var logger = this.require('logger');
   return {
     hello: function () {
       logger.log('Hello world!');
@@ -58,7 +58,7 @@ modules.create('helloWorld', function () {
 modules.create('helloWorld', function () {
   'use strict';
   var p = this.privates, // the "p" variable is for conveniance
-      logger = this.dep('logger');
+      logger = this.require('logger');
 
   p.sayToWorld = function (say) {
       return say + ' world!';
@@ -80,7 +80,7 @@ An alternate convention is writing it like this:
 ```javascript
 modules.create('helloWorld', function () {
   'use strict';
-  var logger = this.dep('logger');
+  var logger = this.require('logger');
 
   var p = this.privates = {
     sayToWorld: function (say) {
@@ -108,7 +108,7 @@ modules.create('helloWorld', function () {
     <script src="src/myDep.js"></script>
     <script>
       modules.initialize(function () {
-         var helloWorld = this.dep('helloWorld');
+         var helloWorld = this.require('helloWorld');
          helloWorld.hello(); // -> Hello world!
       });
     </script>
