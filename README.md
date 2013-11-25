@@ -40,9 +40,9 @@ modules.create('logger', function () {
 ### Adding dependencies
 ```javascript
 // FILE: helloWorld.js
-modules.create('helloWorld', function () {
+modules.create('helloWorld', function (module) {
   'use strict';
-  var logger = this.require('logger');
+  var logger = module.require('logger');
   return {
     hello: function () {
       logger.log('Hello world!');
@@ -55,10 +55,10 @@ modules.create('helloWorld', function () {
 ### Creating private methods
 ```javascript
 // FILE: helloWorld.js
-modules.create('helloWorld', function () {
+modules.create('helloWorld', function (module) {
   'use strict';
-  var p = this.privates, // the "p" variable is for conveniance
-      logger = this.require('logger');
+  var p = module.privates, // the "p" variable is for conveniance
+      logger = module.require('logger');
 
   p.sayToWorld = function (say) {
       return say + ' world!';
@@ -78,11 +78,11 @@ by the module, but will be available when testing the module.
 
 An alternate convention is writing it like this:
 ```javascript
-modules.create('helloWorld', function () {
+modules.create('helloWorld', function (module) {
   'use strict';
-  var logger = this.require('logger');
+  var logger = module.require('logger');
 
-  var p = this.privates = {
+  var p = module.privates = {
     sayToWorld: function (say) {
       return say + ' world!';
     }
@@ -107,8 +107,8 @@ modules.create('helloWorld', function () {
     <script src="src/myModule.js"></script>
     <script src="src/myDep.js"></script>
     <script>
-      modules.initialize(function () {
-         var helloWorld = this.require('helloWorld');
+      modules.initialize(function (module) {
+         var helloWorld = module.require('helloWorld');
          helloWorld.hello(); // -> Hello world!
       });
     </script>
