@@ -14,12 +14,15 @@ until the dependency has been initialized
 - Give good error indications if you are using it wrong
 - Freedom in naming modules (namespaces etc.)
 - Short stack trace
+- Supports Node JS
+- Supports HTML templates
 
-### Additions
+### Test additions
 - A custom module context, giving access to setting private methods and deps that are only exposed during testing
-- A "modules.test()" method which exposes private functions and deps. The deps are stubbed if using Sinon JS
+- A "modules.test()" method which exposes private functions and deps. The deps are stubbed causing the module
+to be completely unaffected by other parts of the project
 
-## How to use it
+## How to use it in the browser
 You are required to load the scripts with script tags. They should be loaded in the body of your HTML so that any CSS
 and/or HTML content can be displayed while loading the scripts.
 
@@ -105,6 +108,24 @@ modules.create('helloWorld', function (require) {
   };
 });
 ```
+### Adding templates
+The third argument passed to the module is a *requireTemplate* function. Currently it only supports **Handlebars**.
+```javascript
+// FILE: helloWorld.js
+modules.create('helloWorld', function (require, p, requireTemplate) {
+  'use strict';
+  var logger = require('logger'),
+      template = requireTemplate('message');
+  return {
+    hello: function () {
+      logger.log('Hello world!');
+      document.body.innerHMTL = template({ content: 'Hello world!' });
+    }
+  };
+});
+```
+> You can configure the template directory, take a look at "Initializing the project"
+
 ### Initializing the project
 ```html
 <!-- FILE: index.html -->
@@ -117,6 +138,7 @@ modules.create('helloWorld', function (require) {
     <script src="src/myModule.js"></script>
     <script src="src/myDep.js"></script>
     <script>
+      modules.templatesPath = 'src/templates/'; // Sets the path to the templates, default is 'templates/'
       modules.initialize(function (require) {
          var helloWorld = require('helloWorld');
          helloWorld.hello(); // -> Hello world!
@@ -126,18 +148,18 @@ modules.create('helloWorld', function (require) {
 </html>
 ````
 >**Note** that in production all the modules will be concatinated and optimized into one single javascript file, 
-causing the browser to not do a lot of unecessary requests.
+avoiding any unneccesary fetching of files.
 
 > **Note** that you could of course load a **main.js** as the last script instead of putting it inside your html
 file/template
 
 >**TIP:** When using Node JS and the HTML is delivered with a template, you can easily dynamically add the script
-tags based on available .js files in your source folder.
+tags based on available .js files in your source folder. Look at the *demo*.
 
 ### Testing a module
-Running a test on a module requires you to pass the name of the module and a function for testing. The function
-receives three arguments. The first being the the module, the second being its private methods
-and the last argument is the required dependencies inside the module being tested.
+Now, this is where the **module-loader** shines. Running a test on a module requires you to pass the name of 
+the module and a function for testing. The function receives three arguments. The first being the the module, 
+the second being its private methods and the last argument is the required dependencies inside the module being tested.
 
 The deps object is a map of the dependencies, e.g. *deps.logger*. If the dependency is an object with methods
 they are all automatically *stubbed*, which basically means that they are verifiable empty functions. We do this
@@ -175,6 +197,64 @@ modules.test('helloWorld', function (helloWorld, p, deps) {
 >**NOTE** that you can use any test library, but I recommend Buster JS because it is awesome and it includes Sinon JS
 which is used to automatically stub dependencies of the module. A module test should only test the methods
 within the module, not the dependencies as they will have their own tests.
+
+### Creating a module with Node js
+Node JS is a module loader, but it does not have the privates and dep stubbing that **module-loader** offers. If you
+want that functionality also in Node you wrap each file the same way as in the browser.
+
+Since Node JS refers to other JS scripts by filename or module-name (node_modules), you do the same when using the
+**module-loader** in the Node environment. That means no name is needed to define the module. Neither templates
+can be required as they are used when rendering a response.
+
+```javascript
+// FILE: mainModule.js
+modules.create(function (require, p) {
+  'use strict';
+  var fs = require('fs'), // Loads the built in fs module in Node JS
+      myModule = require('./myModule'); // Loads one of your own modules
+  
+  p.log = function () {
+    console.log('test');
+  };
+      
+  return {
+    log: function (message) {
+      p.log();
+    }
+  };
+});
+```
+### Initializing the modules
+In your main .js file for the Node project, add the following:
+```javascript
+require('module-loader'); // Will add "modules" to the global scope. require('./module-loader') if pointing to a file
+modules.initialize(function (require) {
+  var module = require('./mainModule');
+  module.log();
+});
+
+```
+### Testing Node JS modules
+There is little difference in testing a Node JS module. It is highly recommended to use Buster JS 
+(**npm install buster -g** , and then **npm link buster** in your project). Also download the sinon module
+(**npm install sinon**).
+```javascript
+// FILE: myModule-test.js
+require('module-loader');
+
+var buster = require('buster'),
+    assert = buster.assert;
+    
+modules.test('./myModule', function (myModule, p, deps) {
+  'use strict';
+  buster.testCase('helloWorld test', {
+    'hello()': {
+      'is a function': function () {
+        assert.isFunction(myModule.log);
+      }
+  });
+});
+```
 
 ## Why build it?
 
