@@ -137,7 +137,7 @@ tags based on available .js files in your source folder.
 ### Testing a module
 Running a test on a module requires you to pass the name of the module and a function for testing. The function
 receives three arguments. The first being the the module, the second being its private methods
-and the last argument is the required dependencies inside the module.
+and the last argument is the required dependencies inside the module being tested.
 
 The deps object is a map of the dependencies, e.g. *deps.logger*. If the dependency is an object with methods
 they are all automatically *stubbed*, which basically means that they are verifiable empty functions. We do this
