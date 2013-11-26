@@ -27,7 +27,8 @@ and/or HTML content can be displayed while loading the scripts.
 *test*.
 
 ### Creating a module
-Pass two arguments to the create method. A name for the module, which can contain any character, and a function.
+Pass two arguments to the create method. A name for the module, which can contain any character, and a function. 
+The returned value from the function will be available to other modules.
 ```javascript
 // FILE: logger.js
 modules.create('logger', function () {
