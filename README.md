@@ -23,9 +23,11 @@ until the dependency has been initialized
 You are required to load the scripts with script tags. They should be loaded in the body of your HTML so that any CSS
 and/or HTML content can be displayed while loading the scripts.
 
-**module-loader** exposes a global variable called: **modules**.
+**module-loader** exposes a global variable called: **modules**. It has three methods, *create*, *initialize* and 
+*test*.
 
-### The module 
+### Creating a module
+Pass two arguments to the create method. A name for the module, which can contain any character, and a function.
 ```javascript
 // FILE: logger.js
 modules.create('logger', function () {
@@ -37,13 +39,16 @@ modules.create('logger', function () {
   };
 });
 ```
+> **TIP:** Use namespace to divide your modules. E.g. **modules.create('helper.logger'...** or 
+**modules.create('model.Todo'...**
 
 ### Adding dependencies
+The first argument passed to your module function is *require*. Use it to fetch other modules defined. 
 ```javascript
 // FILE: helloWorld.js
-modules.create('helloWorld', function (module) {
+modules.create('helloWorld', function (require) {
   'use strict';
-  var logger = module.require('logger');
+  var logger = require('logger');
   return {
     hello: function () {
       logger.log('Hello world!');
@@ -54,12 +59,13 @@ modules.create('helloWorld', function (module) {
 > Even if **myDep.js** is loaded after **myModule.js** it will still work.
 
 ### Creating private methods
+The second argument passed is an object of private methods. These methods are not exposed normally, but will be
+during testing of the module.
 ```javascript
 // FILE: helloWorld.js
-modules.create('helloWorld', function (module) {
+modules.create('helloWorld', function (require, p) {
   'use strict';
-  var p = module.privates, // the "p" variable is for conveniance
-      logger = module.require('logger');
+  var logger = require('logger');
 
   p.sayToWorld = function (say) {
       return say + ' world!';
@@ -77,13 +83,14 @@ functions that are easily testable. In **module-loader** the context of a module
 *this.privates*. You can register methods on this object. These are not available in the public interface returned
 by the module, but will be available when testing the module.
 
-An alternate convention is writing it like this:
+The arugments passed to the module function is also available in the context. An alternative convention on defining
+privates is by replacing the privates object, which has to be done via the context like this:
 ```javascript
-modules.create('helloWorld', function (module) {
+modules.create('helloWorld', function (require) {
   'use strict';
-  var logger = module.require('logger');
+  var logger = require('logger');
 
-  var p = module.privates = {
+  var p = this.privates = { // The p variable is for conveniance
     sayToWorld: function (say) {
       return say + ' world!';
     }
@@ -108,8 +115,8 @@ modules.create('helloWorld', function (module) {
     <script src="src/myModule.js"></script>
     <script src="src/myDep.js"></script>
     <script>
-      modules.initialize(function (module) {
-         var helloWorld = module.require('helloWorld');
+      modules.initialize(function (require) {
+         var helloWorld = require('helloWorld');
          helloWorld.hello(); // -> Hello world!
       });
     </script>
@@ -126,12 +133,18 @@ file/template
 tags based on available .js files in your source folder.
 
 ### Testing a module
+Running a test on a module requires you to pass the name of the module and a function for testing. The function
+receives three arguments. The first being the returned value of the module, the second being the private methods
+defined and the last being the required dependencies.
+
+The deps object is a map of the dependencies, e.g. *deps.logger*. If the dependency is an object with methods
+they are all automatically *stubbed*, which basically means that they are verifiable empty functions. We do this
+to isolate the test to only the module and not trigger code that should be tested elsewhere.
+
 ```javascript
 // FILE: helloWorld-test.js
-modules.test('helloWorld', function (helloWorld) {
+modules.test('helloWorld', function (helloWorld, p, deps) {
   'use strict';
-  var p = helloWorld.privates, // Available because we test the module
-      deps = helloWorld.deps; // Available because we test the module
   buster.testCase('helloWorld test', {
     'hello()': {
       'is a function': function () {
