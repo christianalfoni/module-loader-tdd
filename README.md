@@ -80,9 +80,8 @@ modules.create('helloWorld', function (require, p) {
 });
 ```
 **Why create these private methods?** When developing test-driven and functional, a core concept is creating small input-output
-functions that are easily testable. In **module-loader** the context of a module has an object defined via
-*this.privates*. You can register methods on this object. These are not available in the public interface returned
-by the module, but will be available when testing the module.
+functions that are easily testable. You normally do not want to expose these methods to the rest of the application.
+By using a "module-context" these private methods can be exposed only during testing.
 
 The arugments passed to the module function is also available in the context. An alternative convention on defining
 privates is by replacing the privates object, which has to be done via the context like this:
