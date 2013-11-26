@@ -61,7 +61,9 @@ modules.create('helloWorld', function (require) {
 
 ### Creating private methods
 The second argument passed is an object of private methods. These methods are not exposed normally, but will be
-during testing of the module.
+during testing of the module. This gives you a clear definition of which methods are public and which are private
+to the module.
+
 ```javascript
 // FILE: helloWorld.js
 modules.create('helloWorld', function (require, p) {
