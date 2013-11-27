@@ -18,6 +18,7 @@ until the dependency has been initialized
 - Supports HTML templates
 
 ### Test additions
+- Close the module completely, no code execution beyond the tested module
 - A custom module context, giving access to setting private methods and deps that are only exposed during testing
 - A "modules.test()" method which exposes private functions and deps. The deps are stubbed causing the module
 to be completely unaffected by other parts of the project
