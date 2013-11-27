@@ -3,6 +3,10 @@ module-loader-tdd
 
 An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
 
+## Install
+- **Browser**: Download the file from lib folder
+- **Node**: npm install module-loader-tdd
+
 ## Spec
 
 ### The basics
