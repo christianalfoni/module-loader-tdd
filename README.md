@@ -89,7 +89,7 @@ modules.create('helloWorld', function (require, p) {
 functions that are easily testable. You normally do not want to expose these methods to the rest of the application.
 By using a "module-context" these private methods can be exposed only during testing.
 
-The arugments passed to the module function is also available in the context. An alternative convention on defining
+The argument passed to the module function is also available in the context. An alternative convention on defining
 privates is by replacing the privates object, which has to be done via the context like this:
 ```javascript
 modules.create('helloWorld', function (require) {
@@ -200,7 +200,7 @@ which is used to automatically stub dependencies of the module. A module test sh
 within the module, not the dependencies as they will have their own tests.
 
 ### Creating a module with Node js
-Node JS is a module loader, but it does not have the privates and dep stubbing that **module-loader** offers. If you
+Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader** offers. If you
 want that functionality also in Node you wrap each file the same way as in the browser.
 
 Since Node JS refers to other JS scripts by filename or module-name (node_modules), you do the same when using the
