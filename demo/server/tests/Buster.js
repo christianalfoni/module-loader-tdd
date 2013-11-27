@@ -4,7 +4,7 @@ config['My tests"'] = {
     environment: "node",
     rootPath: '../../../',
     libs: [
-        "module-loader.js"
+        "lib/module-loader-tdd.js"
     ],
     tests: [
         "demo/server/tests/*-test.js"

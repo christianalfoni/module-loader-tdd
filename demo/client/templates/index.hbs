@@ -5,14 +5,12 @@
     </head>
     <body>
 
-    <script src="demo/vendors/jquery-1.10.2.js"></script>
-    <script src="demo/vendors/underscore.js"></script>
-    <script src="demo/vendors/backbone.js"></script>
-    <script src="demo/vendors/handlebars-v1.1.2.js"></script>
-    <script src="module-loader.js"></script>
+    <script src="demo/client/vendors/jquery-1.10.2.js"></script>
+    <script src="demo/client/vendors/handlebars-v1.1.2.js"></script>
+    <script src="lib/module-loader-tdd.js"></script>
     {{#each sourceFiles}}<script src="{{this}}"></script>{{/each}}
     <script>
-        modules.templatesPath = 'demo/templates/';
+        modules.templatesPath = 'client/demo/templates/';
         modules.initialize(function (require) {
             var TodoView = require('view.Todo'),
                     view = new TodoView();

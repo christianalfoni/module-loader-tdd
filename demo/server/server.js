@@ -1,4 +1,4 @@
-require('./../../module-loader');
+require('./../../lib/module-loader');
 modules.initialize(function (require) {
 
     var express = require('express');

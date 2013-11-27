@@ -1,12 +1,21 @@
 {
-  "name": "module-loader",
-  "version": "0.1.0",
-  "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-uglify": "~0.2.2",
-    "hbs": "~2.4.0",
-    "recursive-readdir": "0.0.2",
-    "express": "~3.4.4",
-    "sinon": "~1.7.3"
-  }
+    "name": "module-loader-tdd",
+    "description": "Module loader that lets you test each module with private methods and stubbed dependencies",
+    "version": "0.1.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/christianalfoni/module-loader-tdd.git"
+    },
+    "main": "lib/module-loader-tdd",
+    "devDependencies": {
+        "grunt": "~0.4.2",
+        "grunt-contrib-uglify": "~0.2.2",
+        "hbs": "~2.4.0",
+        "recursive-readdir": "0.0.2",
+        "express": "~3.4.4",
+        "sinon": "~1.7.3"
+    },
+    "dependencies": {
+        "sinon": "~1.7.3"
+    }
 }

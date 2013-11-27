@@ -4,9 +4,9 @@ config["My tests"] = {
     environment: "browser",
     rootPath: '../',
     sources: [
-        "module-loader.js"
+        "lib/module-loader-tdd.js"
     ],
     tests: [
-        "tests/module-loader-test.js"
+        "tests/module-loader-tdd-test.js"
     ]
 };
