@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        html, body {
+            background-color: #111;
+            margin: 0;
+        }
+
+    </style>
+</head>
+<body>
+<script src="demo.min.js"></script>
+<script>
+
+    modules.initialize(function () {
+        var myModule = this.require('myModule');
+        myModule.someMethod();
+        console.log(myModule._privates);
+    });
+
+</script>
+</body>
+</html>
