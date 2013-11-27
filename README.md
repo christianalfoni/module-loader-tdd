@@ -3,6 +3,10 @@ module-loader-tdd
 
 An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
 
+## Install
+- **Browser**: Download the file from lib folder
+- **Node**: npm install module-loader-tdd
+
 ## Spec
 
 ### The basics
@@ -135,7 +139,7 @@ modules.create('helloWorld', function (require, p, requireTemplate) {
   <head>
   </head>
   <body>
-    <script src="lib/module-loader.js"></script>
+    <script src="lib/module-loader-tdd.js"></script>
     <script src="src/myModule.js"></script>
     <script src="src/myDep.js"></script>
     <script>
@@ -158,7 +162,7 @@ file/template
 tags based on available .js files in your source folder. Look at the *demo*.
 
 ### Testing a module
-Now, this is where the **module-loader** shines. Running a test on a module requires you to pass the name of 
+Now, this is where the **module-loader-tdd** shines. Running a test on a module requires you to pass the name of 
 the module and a function for testing. The function receives three arguments. The first being the the module, 
 the second being its private methods and the last argument is the required dependencies inside the module being tested.
 
@@ -200,11 +204,11 @@ which is used to automatically stub dependencies of the module. A module test sh
 within the module, not the dependencies as they will have their own tests.
 
 ### Creating a module with Node js
-Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader** offers. If you
+Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader-tdd** offers. If you
 want that functionality also in Node you wrap each file the same way as in the browser.
 
 Since Node JS refers to other JS scripts by filename or module-name (node_modules), you do the same when using the
-**module-loader** in the Node environment. That means no name is needed to define the module. Neither templates
+**module-loader-tdd** in the Node environment. That means no name is needed to define the module. Neither templates
 can be required as they are used when rendering a response.
 
 ```javascript
@@ -228,7 +232,7 @@ modules.create(function (require, p) {
 ### Initializing the modules
 In your main .js file for the Node project, add the following:
 ```javascript
-require('module-loader'); // Will add "modules" to the global scope. require('./module-loader') if pointing to a file
+require('module-loader-tdd'); // Will add "modules" to the global scope
 modules.initialize(function (require) {
   var module = require('./mainModule');
   module.log();
