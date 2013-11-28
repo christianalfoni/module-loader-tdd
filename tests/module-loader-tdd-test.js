@@ -473,5 +473,18 @@ buster.testCase('module-loader', {
             assert(p.isModule(moduleLoaderModule));
             refute(p.isModule(otherModule));
         }
-    }
+    },
+    'p.parseTemplatesPath': {
+        'exists': function () {
+            assert.isFunction(p.parseTemplatesPath);
+        },
+        'takes one argument (path)': function () {
+            assert.equals(p.parseTemplatesPath.length, 1);
+        },
+        'returns a valid path to templates': function () {
+            assert.equals(p.parseTemplatesPath('/templates/'), 'templates/');
+            assert.equals(p.parseTemplatesPath('/templates'), 'templates/');
+            assert.equals(p.parseTemplatesPath('templates'), 'templates/');
+        }
+     }
 });

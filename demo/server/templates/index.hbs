@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+
+    <script src="vendors/jquery-1.10.2.js"></script>
+    <script src="vendors/handlebars-v1.1.2.js"></script>
+    <script src="lib/module-loader-tdd.js"></script>
+    {{#each sourceFiles}}<script src="js/{{this}}"></script>{{/each}}
+    <script>
+        modules.templatesPath = 'templates/';
+        modules.initialize(function (require) {
+            var helloWorld = require('helloWorld');
+            var helloText = helloWorld.hello();
+            document.body.innerHTML = helloText;
+        });
+    </script>
+
+    </body>
+</html>
