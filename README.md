@@ -1,12 +1,26 @@
 module-loader-tdd
 =================
-
 An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
+### Table of contents
+- [Install](#install)
+- [The spec](#spec)
+- [Creating a module](#creating)
+- [Adding dependencies](#deps)
+- [Templates](#templates)
+- [Adding private methods](#privates)
+- [Initializing](#init)
+- [Testing a module](#testing)
+- [Node: Creating a module](#creating_node)
+- [Node: Initializing](#init_node)
+- [Node: Testing a module](#testing_node)
+- [Why build it?](#why)
 
+<a name="install"/>
 ## Install
 - **Browser**: Download the file from lib folder
 - **Node**: npm install module-loader-tdd
 
+<a name="spec"/>
 ## Spec
 
 ### The basics
@@ -33,7 +47,7 @@ and/or HTML content can be displayed while loading the scripts.
 
 **module-loader** exposes a global variable called: **modules**. It has three methods, *create*, *initialize* and 
 *test*.
-
+<a name="creating"/>
 ### Creating a module
 Pass two arguments to the create method. A name for the module, which can contain any character, and a function. 
 The returned value from the function will be available to other modules.
@@ -51,6 +65,7 @@ modules.create('logger', function () {
 > **TIP:** Use namespace to divide your modules. E.g. **modules.create('helper.logger'...** or 
 **modules.create('model.Todo'...**
 
+<a name="deps"/>
 ### Adding dependencies
 The first argument passed to your module function is *require*. Use it to fetch other modules defined. 
 ```javascript
@@ -67,6 +82,7 @@ modules.create('helloWorld', function (require) {
 ```
 > Even if **myDep.js** is loaded after **myModule.js** it will still work.
 
+<a name="privates"/>
 ### Creating private methods
 The second argument passed is an object of private methods. These methods are not exposed normally, but will be
 during testing of the module. This gives you a clear definition of which methods are public and which are private
@@ -113,6 +129,7 @@ modules.create('helloWorld', function (require) {
   };
 });
 ```
+<a name="templates"/>
 ### Adding templates
 The third argument passed to the module is a *requireTemplate* function. Currently it only supports **Handlebars**.
 ```javascript
@@ -131,6 +148,7 @@ modules.create('helloWorld', function (require, p, requireTemplate) {
 ```
 > You can configure the template directory, take a look at "Initializing the project"
 
+<a name="init"/>
 ### Initializing the project
 ```html
 <!-- FILE: index.html -->
@@ -161,6 +179,7 @@ file/template
 >**TIP:** When using Node JS and the HTML is delivered with a template, you can easily dynamically add the script
 tags based on available .js files in your source folder. Look at the *demo*.
 
+<a name="testing"/>
 ### Testing a module
 Now, this is where the **module-loader-tdd** shines. Running a test on a module requires you to pass the name of 
 the module and a function for testing. The function receives three arguments. The first being the the module, 
@@ -203,6 +222,7 @@ modules.test('helloWorld', function (helloWorld, p, deps) {
 which is used to automatically stub dependencies of the module. A module test should only test the methods
 within the module, not the dependencies as they will have their own tests.
 
+<a name="creating_node"/>
 ### Creating a module with Node js
 Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader-tdd** offers. If you
 want that functionality also in Node you wrap each file the same way as in the browser.
@@ -229,6 +249,7 @@ modules.create(function (require, p) {
   };
 });
 ```
+<a name="init_node"/>
 ### Initializing the modules
 In your main .js file for the Node project, add the following:
 ```javascript
@@ -239,6 +260,7 @@ modules.initialize(function (require) {
 });
 
 ```
+<a name="testing_node"/>
 ### Testing Node JS modules
 There is little difference in testing a Node JS module. It is highly recommended to use Buster JS 
 (**npm install buster -g** , and then **npm link buster** in your project). Also download the sinon module
@@ -260,7 +282,7 @@ modules.test('./myModule', function (myModule, p, deps) {
   });
 });
 ```
-
+<a name="why"/>
 ## Why build it?
 
 I have been working a lot with RequireJS and have a lot of good experience with it. When going
