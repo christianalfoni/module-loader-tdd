@@ -202,8 +202,8 @@ config["My tests"] = {
         "lib/module-loader-tdd.js"
     ],
     sources: [
-        "demo/client/*.js", // Load modules
-        "demo/client/**/*.hbs" // Load templates
+        "demo/client/app/**/*.js", // Load modules
+        "demo/client/templates/**/*.hbs" // Load templates
     ],
     tests: [
         "demo/client/tests/*-test.js" // Load tests
