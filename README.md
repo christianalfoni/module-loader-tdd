@@ -201,25 +201,25 @@ var config = module.exports;
 
 config["My tests"] = {
     environment: "browser",
-    rootPath: '../../../', // Going to the root of this project to access lib folder
+    rootPath: '../', // Going to parent folder of tests, where all other files are available
     libs: [
-        "demo/client/vendors/jquery-1.10.2.js", // Any general libs has to be loaded
-        "demo/client/vendors/handlebars-v1.1.2.js",
-        "lib/module-loader-tdd.js"
+        "vendors/jquery-1.10.2.js", // Any general libs has to be loaded
+        "vendors/handlebars-v1.1.2.js",
+        "vendors/module-loader-tdd.js"
     ],
     sources: [
-        "demo/client/app/**/*.js", // Load modules
-        "demo/client/templates/**/*.hbs" // Load templates
+        "app/**/*.js", // Load modules
+        "templates/**/*.hbs" // Load templates
     ],
     tests: [
-        "demo/client/tests/*-test.js" // Load tests
+        "**/*-test.js" // Load tests
     ]
 };
 ```
 
 ```javascript
 // FILE: helloWorld-test.js
-modules.templatesPath = 'demo/client/templates/'; // Normally 
+modules.templatesPath = 'templates/'; // Set path if needed
 modules.test('helloWorld', function (helloWorld, p, deps) {
   'use strict';
   buster.testCase('helloWorld test', {
@@ -255,9 +255,9 @@ within the module, not the dependencies as they will have their own tests.
 ### Creating a module with Node js
 Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader-tdd** offers. If you want that functionality also in Node you wrap each file the same way as in the browser.
 
-When launching node it will automatically load all JS files in the relative path of your launched file. If your modules are contained in an other folder, you can define that. **module-loader-tdd** will only try to load .js files and ignore any *node_modules* folder. This will register your modules and make them available in your named format.
+When launching node it will automatically load all JS files in the relative path of your launched file and thereby register them as your modules. If your modules are contained in an other folder, you can define that. **module-loader-tdd** will only try to load .js files and ignore any *node_modules* folder.
 
-The *requireTemplate* function is not available as it is not necessarily needed. Node JS has its own modules for handling templates. (e.g. Express + Handlebars)
+The *requireTemplate* is not implemented on Node JS since that is usually done with other libraries.
 
 ```javascript
 // FILE: mainModule.js
@@ -302,15 +302,15 @@ var config = module.exports;
 
 config['My tests"'] = {
     environment: "node",
-    rootPath: '../../../', // Going to the root of this project to claim the loader from the libs folder
+    rootPath: '../', // Going to the parent folder of the tests folder
     libs: [
-        "lib/module-loader-tdd.js"
+        "module-loader-tdd" // Loading the module-loader-tdd library
     ],
     sources: [
-        "demo/server/modules/**/*.js" // Loading all the modules you want to test
+        "modules/**/*.js" // Loading all the modules you want to test
     ],
     tests: [
-        "demo/server/tests/*-test.js" // Loading the tests
+        "**/*-test.js" // Loading the tests
     ]
 }
 ```
