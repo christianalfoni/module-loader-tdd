@@ -2,6 +2,7 @@ module-loader-tdd
 =================
 An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
 ### Table of contents
+- [Demo](#demo)
 - [Install](#install)
 - [The spec](#spec)
 - [Creating a module](#creating)
