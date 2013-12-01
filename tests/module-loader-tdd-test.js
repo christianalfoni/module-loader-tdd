@@ -392,44 +392,6 @@ buster.testCase('module-loader', {
             delete p.Handlebars;
         }
     },
-    'p.extractBrowserArgs': {
-        setUp: function () {
-            this.createArgs = function () {
-                return arguments;
-            }
-        },
-        'exists': function () {
-            assert(p.extractBrowserArgs);
-        },
-        'takes one argument (arguments)': function () {
-            assert.equals(p.extractBrowserArgs.length, 1);
-        },
-        'returns an object of extracted arguments': function () {
-            var func = function () {};
-            assert.equals(p.extractBrowserArgs(this.createArgs()), {name: undefined, func: undefined});
-            assert.equals(p.extractBrowserArgs(this.createArgs('module')), {name: 'module', func: undefined});
-            assert.equals(p.extractBrowserArgs(this.createArgs('module', func)), {name: 'module', func: func});
-        }
-    },
-    'p.extractNodeArgs': {
-        setUp: function () {
-            this.createArgs = function () {
-                return arguments;
-            }
-        },
-        'exists': function () {
-            assert.isFunction(p.extractNodeArgs);
-        },
-        'takes one argument (arguments)': function () {
-            assert.equals(p.extractNodeArgs.length, 1);
-        },
-        'returns an object of extracted arguments': function () {
-            var func = function () {};
-            assert.equals(p.extractNodeArgs(this.createArgs()), {name: '__node__', func: undefined});
-            assert.equals(p.extractNodeArgs(this.createArgs('module')), {name: '__node__', func: 'module'});
-            assert.equals(p.extractNodeArgs(this.createArgs(func)), {name: '__node__', func: func});
-        }
-    },
     'p.contextToArray': {
         'exists': function () {
             assert.isFunction(p.contextToArray);
