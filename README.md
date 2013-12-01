@@ -15,6 +15,10 @@ An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
 - [Node: Testing a module](#testing_node)
 - [Why build it?](#why)
 
+<a name="demo"/>
+## Demo
+Have a look at the demo over at: ??? . It shows a complete project setup with client, server and Buster JS.
+
 <a name="install"/>
 ## Install
 - **Browser**: Download the file from lib folder
