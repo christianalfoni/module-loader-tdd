@@ -120,6 +120,8 @@ modules.create('helloWorld', function (require) {
   'use strict';
   var logger = require('logger');
 
+  // The p variable is to be able to point to the privates 
+  // from any public method, or other private method
   var p = this.privates = { 
     sayToWorld: function (say) {
       return say + ' world!';
