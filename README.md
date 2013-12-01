@@ -80,7 +80,7 @@ modules.create('helloWorld', function (require) {
   };
 });
 ```
-> Even if **myDep.js** is loaded after **myModule.js** it will still work.
+> Even if **helloWorld.js** is loaded after **logger.js** it will still work.
 
 <a name="privates"/>
 ### Creating private methods
