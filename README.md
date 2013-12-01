@@ -114,14 +114,13 @@ modules.create('helloWorld', function (require, p) {
 functions that are easily testable. You normally do not want to expose these methods to the rest of the application.
 By using a "module-context" these private methods can be exposed only during testing.
 
-The argument passed to the module function is also available in the context. An alternative convention on defining
-privates is by replacing the privates object, which has to be done via the context like this:
+The argument passed to the module function is also available in the execution context itself. An alternative convention on defining privates can be done by replacing the privates object, which has to be done like this:
 ```javascript
 modules.create('helloWorld', function (require) {
   'use strict';
   var logger = require('logger');
 
-  var p = this.privates = { // The p variable is for conveniance
+  var p = this.privates = { 
     sayToWorld: function (say) {
       return say + ' world!';
     }
