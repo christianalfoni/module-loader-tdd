@@ -190,6 +190,28 @@ they are all automatically *stubbed*, which basically means that they are verifi
 to isolate the test to only the module and not trigger code that should be tested elsewhere.
 
 ```javascript
+// FILE: Buster.js
+var config = module.exports;
+
+config["My tests"] = {
+    environment: "browser",
+    rootPath: '../../../', // Going to the root of this project to access lib folder
+    libs: [
+        "demo/client/vendors/jquery-1.10.2.js", // Any general libs has to be loaded
+        "demo/client/vendors/handlebars-v1.1.2.js",
+        "lib/module-loader-tdd.js"
+    ],
+    sources: [
+        "demo/client/*.js", // Load modules
+        "demo/client/**/*.hbs" // Load templates
+    ],
+    tests: [
+        "demo/client/tests/*-test.js" // Load tests
+    ]
+};
+```
+
+```javascript
 // FILE: helloWorld-test.js
 modules.test('helloWorld', function (helloWorld, p, deps) {
   'use strict';
@@ -224,19 +246,18 @@ within the module, not the dependencies as they will have their own tests.
 
 <a name="creating_node"/>
 ### Creating a module with Node js
-Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader-tdd** offers. If you
-want that functionality also in Node you wrap each file the same way as in the browser.
+Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader-tdd** offers. If you want that functionality also in Node you wrap each file the same way as in the browser.
 
-Since Node JS refers to other JS scripts by filename or module-name (node_modules), you do the same when using the
-**module-loader-tdd** in the Node environment. That means no name is needed to define the module. Neither templates
-can be required as they are used when rendering a response.
+When launching node it will automatically load all JS files in the relative path of your launched file. If your modules are contained in an other folder, you can define that. **module-loader-tdd** will only try to load .js files and ignore any *node_modules* folder. This will register your modules and make them available in your named format.
+
+The *requireTemplate* function is not available as it is not necessarily needed. Node JS has its own modules for handling templates. (e.g. Express + Handlebars)
 
 ```javascript
 // FILE: mainModule.js
-modules.create(function (require, p) {
+modules.create('main', function (require, p) {
   'use strict';
   var fs = require('fs'), // Loads the built in fs module in Node JS
-      myModule = require('./myModule'); // Loads one of your own modules
+      myModule = require('myModule'); // Loads one of your own modules
   
   p.log = function () {
     console.log('test');
@@ -249,13 +270,16 @@ modules.create(function (require, p) {
   };
 });
 ```
+> **Note** You can use the same namespace convention here as in the browser, e.g. 'common.main'
+
 <a name="init_node"/>
 ### Initializing the modules
 In your main .js file for the Node project, add the following:
 ```javascript
 require('module-loader-tdd'); // Will add "modules" to the global scope
+modules.path = __dirname + '/modules'; // By default the same directory as the launched file is used
 modules.initialize(function (require) {
-  var module = require('./mainModule');
+  var module = require('main');
   module.log();
 });
 
@@ -263,16 +287,33 @@ modules.initialize(function (require) {
 <a name="testing_node"/>
 ### Testing Node JS modules
 There is little difference in testing a Node JS module. It is highly recommended to use Buster JS 
-(**npm install buster -g** , and then **npm link buster** in your project). Also download the sinon module
-(**npm install sinon**).
+(**npm install buster -g** , and then **npm link buster** in your project). Sinon is automatically included.
+
+```javascript
+// FILE: Buster.js
+var config = module.exports;
+
+config['My tests"'] = {
+    environment: "node",
+    rootPath: '../../../', // Going to the root of this project to claim the loader from the libs folder
+    libs: [
+        "lib/module-loader-tdd.js"
+    ],
+    sources: [
+        "demo/server/modules/**/*.js" // Loading all the modules you want to test
+    ],
+    tests: [
+        "demo/server/tests/*-test.js" // Loading the tests
+    ]
+}
+```
+
 ```javascript
 // FILE: myModule-test.js
-require('module-loader');
-
 var buster = require('buster'),
     assert = buster.assert;
-    
-modules.test('./myModule', function (myModule, p, deps) {
+
+modules.test('myModule', function (myModule, p, deps) {
   'use strict';
   buster.testCase('helloWorld test', {
     'hello()': {
