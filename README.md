@@ -213,6 +213,7 @@ config["My tests"] = {
 
 ```javascript
 // FILE: helloWorld-test.js
+modules.templatesPath = 'demo/client/templates/'; // Normally 
 modules.test('helloWorld', function (helloWorld, p, deps) {
   'use strict';
   buster.testCase('helloWorld test', {
