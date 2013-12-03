@@ -33,7 +33,7 @@ Have a look at the demo over at: https://github.com/christianalfoni/module-loade
 - A module can import other modules
 - Module loading order is irrelevant. A dependency not yet loaded should postpone the initializing of the module
 until the dependency has been initialized
-- It supports concatinating all module files, compress and uglify wihtout breaking any code
+- It supports concatinating all module files, compress and uglify without breaking any code
 - Give good error indications if you are using it wrong
 - Freedom in naming modules (namespaces etc.)
 - Short stack trace
