@@ -20,6 +20,8 @@ An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
 ## Demo
 Have a look at the demo over at: https://github.com/christianalfoni/module-loader-tdd-demo . It shows a complete project setup with client, server and Buster JS.
 
+##### Latest version: 1.7 (Seems stable, need more testing though)
+
 <a name="install"/>
 ## Install
 - **Browser**: Download the file from lib folder
