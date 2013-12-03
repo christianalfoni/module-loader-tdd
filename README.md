@@ -255,16 +255,16 @@ within the module, not the dependencies as they will have their own tests.
 ### Creating a module with Node js
 Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader-tdd** offers. If you want that functionality also in Node you wrap each file the same way as in the browser.
 
-When launching node it will automatically load all JS files in the relative path of your launched file and thereby register them as your modules. If your modules are contained in an other folder, you can define that. **module-loader-tdd** will only try to load .js files and ignore any *node_modules* folder.
+Since Node JS already has a *require* function and a convention for loading files, **module-loader-tdd** does not mess with that. It only works as a "middle-man" registering all loaded modules to create their context with privates and stubbed dependencies for testing. Because of this, you do not set a name for the module.
 
 The *requireTemplate* is not implemented on Node JS since that is usually done with other libraries.
 
 ```javascript
 // FILE: mainModule.js
-modules.create('main', function (require, p) {
+modules.create(function (require, p) {
   'use strict';
   var fs = require('fs'), // Loads the built in fs module in Node JS
-      myModule = require('myModule'); // Loads one of your own modules
+      myModule = require('./myModule'); // Loads one of your own modules, relative to the file you are in
   
   p.log = function () {
     console.log('test');
@@ -284,9 +284,8 @@ modules.create('main', function (require, p) {
 In your main .js file for the Node project, add the following:
 ```javascript
 require('module-loader-tdd'); // Will add "modules" to the global scope
-modules.path = __dirname + '/modules'; // By default the same directory as the launched file is used
 modules.initialize(function (require) {
-  var module = require('main');
+  var module = require('./main');
   module.log();
 });
 
