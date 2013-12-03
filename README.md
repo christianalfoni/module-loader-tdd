@@ -300,9 +300,6 @@ var config = module.exports;
 config['My tests"'] = {
     environment: "node",
     rootPath: '../', // Going to the parent folder of the tests folder
-    sources: [
-        "modules/**/*.js" // Loading all the modules you want to test
-    ],
     tests: [
         "tests/**/*-test.js" // Loading the tests
     ]
@@ -314,7 +311,7 @@ config['My tests"'] = {
 var buster = require('buster'),
     assert = buster.assert;
 
-modules.test('myModule', function (myModule, p, deps) {
+modules.test('./../modules/myModule', function (myModule, p, deps) {
   'use strict';
   buster.testCase('helloWorld test', {
     'hello()': {
