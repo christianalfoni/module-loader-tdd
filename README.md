@@ -277,7 +277,7 @@ modules.create(function (require, p) {
   };
 });
 ```
-> **NOTE** That if a dependency returns an empty object you have probably forgotten to use the passed *require* function
+> **NOTE** That if a dependency returns an empty object you have probably forgotten to use the passed *require* function. Modules required with Node JS global *require* will not be registered and handled by **module-loader-tdd**
 
 <a name="init_node"/>
 ### Initializing the modules
