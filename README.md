@@ -299,9 +299,8 @@ var config = module.exports;
 
 config['My tests"'] = {
     environment: "node",
-    rootPath: '../', // Going to the parent folder of the tests folder
     tests: [
-        "tests/**/*-test.js" // Loading the tests
+        "**/*-test.js" // Loading the tests
     ]
 }
 ```
@@ -311,6 +310,7 @@ config['My tests"'] = {
 var buster = require('buster'),
     assert = buster.assert;
 
+// Going to parent folder of tests/ and into the modules folder
 modules.test('./../modules/myModule', function (myModule, p, deps) {
   'use strict';
   buster.testCase('helloWorld test', {
