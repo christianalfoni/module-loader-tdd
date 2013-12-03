@@ -195,6 +195,8 @@ The deps object is a map of the dependencies, e.g. *deps.logger*. If the depende
 they are all automatically *stubbed*, which basically means that they are verifiable empty functions. We do this
 to isolate the test to only the module and not trigger code that should be tested elsewhere.
 
+Any required templates will not be fetched, it will return an empty string, as you will be testing the code that puts content into your HTML, not the HTML itself.
+
 ```javascript
 // FILE: Buster.js
 var config = module.exports;
@@ -204,12 +206,11 @@ config["My tests"] = {
     rootPath: '../', // Going to parent folder of tests, where all other files are available
     libs: [
         "vendors/jquery-1.10.2.js", // Any general libs has to be loaded
-        "vendors/handlebars-v1.1.2.js",
+        // Handlebars is not needed as you will not test templates
         "vendors/module-loader-tdd.js"
     ],
     sources: [
-        "app/**/*.js", // Load modules
-        "templates/**/*.hbs" // Load templates
+        "app/**/*.js" // Load modules
     ],
     tests: [
         "**/*-test.js" // Load tests
@@ -219,7 +220,6 @@ config["My tests"] = {
 
 ```javascript
 // FILE: helloWorld-test.js
-modules.templatesPath = 'templates/'; // Set path if needed
 modules.test('helloWorld', function (helloWorld, p, deps) {
   'use strict';
   buster.testCase('helloWorld test', {
@@ -255,16 +255,16 @@ within the module, not the dependencies as they will have their own tests.
 ### Creating a module with Node js
 Node JS has a module loader, but it does not have the privates and dep stubbing that **module-loader-tdd** offers. If you want that functionality also in Node you wrap each file the same way as in the browser.
 
-When launching node it will automatically load all JS files in the relative path of your launched file and thereby register them as your modules. If your modules are contained in an other folder, you can define that. **module-loader-tdd** will only try to load .js files and ignore any *node_modules* folder.
+Since Node JS already has a *require* function and a convention for loading files, **module-loader-tdd** does not mess with that. It only works as a "middle-man" registering all loaded modules to create a context with privates and stubbed dependencies for testing. Because of this, you do not set a name for the module.
 
-The *requireTemplate* is not implemented on Node JS since that is usually done with other libraries.
+The *requireTemplate* is not implemented on Node JS as you normally do not load templates directly and Node JS is not only web related.
 
 ```javascript
 // FILE: mainModule.js
-modules.create('main', function (require, p) {
+modules.create(function (require, p) {
   'use strict';
   var fs = require('fs'), // Loads the built in fs module in Node JS
-      myModule = require('myModule'); // Loads one of your own modules
+      myModule = require('./myModule'); // Loads one of your own modules, relative to the file you are in
   
   p.log = function () {
     console.log('test');
@@ -277,16 +277,13 @@ modules.create('main', function (require, p) {
   };
 });
 ```
-> **Note** You can use the same namespace convention here as in the browser, e.g. 'common.main'
-
 <a name="init_node"/>
 ### Initializing the modules
 In your main .js file for the Node project, add the following:
 ```javascript
 require('module-loader-tdd'); // Will add "modules" to the global scope
-modules.path = __dirname + '/modules'; // By default the same directory as the launched file is used
 modules.initialize(function (require) {
-  var module = require('main');
+  var module = require('./main');
   module.log();
 });
 
@@ -303,14 +300,11 @@ var config = module.exports;
 config['My tests"'] = {
     environment: "node",
     rootPath: '../', // Going to the parent folder of the tests folder
-    libs: [
-        "module-loader-tdd" // Loading the module-loader-tdd library
-    ],
     sources: [
         "modules/**/*.js" // Loading all the modules you want to test
     ],
     tests: [
-        "**/*-test.js" // Loading the tests
+        "tests/**/*-test.js" // Loading the tests
     ]
 }
 ```
