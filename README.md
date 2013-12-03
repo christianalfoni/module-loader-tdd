@@ -277,6 +277,8 @@ modules.create(function (require, p) {
   };
 });
 ```
+> **NOTE** That if a dependency returns an empty object you have probably forgotten to use the passed *require* function
+
 <a name="init_node"/>
 ### Initializing the modules
 In your main .js file for the Node project, add the following:
