@@ -1,7 +1,7 @@
 {
     "name": "module-loader-tdd",
     "description": "Module loader that lets you test each module with private methods and stubbed dependencies",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "repository": {
         "type": "git",
         "url": "https://github.com/christianalfoni/module-loader-tdd.git"
@@ -17,6 +17,6 @@
     },
     "dependencies": {
         "sinon": "~1.7.3",
-        "recursive-readdir": "0.0.2"
+        "callsite": "~1.0.0"
     }
 }

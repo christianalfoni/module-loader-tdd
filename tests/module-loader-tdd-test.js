@@ -448,5 +448,13 @@ buster.testCase('module-loader', {
             assert.equals(p.parseTemplatesPath('/templates'), 'templates/');
             assert.equals(p.parseTemplatesPath('templates'), 'templates/');
         }
-     }
+    },
+    '//p.parseModulePath': {
+        'exists': function () {
+            assert.isFunction(p.parseModulePath);
+        },
+        'takes on argument (name)': function () {
+            assert.equals(p.parseModuleName.length, 1);
+        }
+    }
 });
