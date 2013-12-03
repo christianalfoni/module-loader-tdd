@@ -309,6 +309,8 @@ config['My tests"'] = {
 
 ```javascript
 // FILE: myModule-test.js
+require('module-loader-tdd');
+
 var buster = require('buster'),
     assert = buster.assert;
 
