@@ -18,7 +18,9 @@ An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
 
 <a name="demo"/>
 ## Demo
-Have a look at the demo over at: ??? . It shows a complete project setup with client, server and Buster JS.
+Have a look at the demo over at: https://github.com/christianalfoni/module-loader-tdd-demo . It shows a complete project setup with client, server and Buster JS.
+
+##### Latest version: 1.7 (Seems stable, need more testing though)
 
 <a name="install"/>
 ## Install
@@ -33,7 +35,7 @@ Have a look at the demo over at: ??? . It shows a complete project setup with cl
 - A module can import other modules
 - Module loading order is irrelevant. A dependency not yet loaded should postpone the initializing of the module
 until the dependency has been initialized
-- It supports concatinating all module files, compress and uglify wihtout breaking any code
+- It supports concatinating all module files, compress and uglify without breaking any code
 - Give good error indications if you are using it wrong
 - Freedom in naming modules (namespaces etc.)
 - Short stack trace
@@ -89,7 +91,7 @@ modules.create('helloWorld', function (require) {
 
 <a name="privates"/>
 ### Creating private methods
-The second argument passed is an object of private methods. These methods are not exposed normally, but will be
+The second argument passed is an object of private methods. These methods are not exposed, but will be
 during testing of the module. This gives you a clear definition of which methods are public and which are private
 to the module.
 
@@ -277,6 +279,8 @@ modules.create(function (require, p) {
   };
 });
 ```
+> **NOTE** That if a dependency returns an empty object you have probably forgotten to use the passed *require* function. Modules required with Node JS global *require* will not be registered and handled by **module-loader-tdd**
+
 <a name="init_node"/>
 ### Initializing the modules
 In your main .js file for the Node project, add the following:
@@ -299,18 +303,20 @@ var config = module.exports;
 
 config['My tests"'] = {
     environment: "node",
-    rootPath: '../', // Going to the parent folder of the tests folder
     tests: [
-        "tests/**/*-test.js" // Loading the tests
+        "**/*-test.js" // Loading the tests
     ]
 }
 ```
 
 ```javascript
 // FILE: myModule-test.js
+require('module-loader-tdd');
+
 var buster = require('buster'),
     assert = buster.assert;
 
+// Going to parent folder of tests/ and into the modules folder
 modules.test('./../modules/myModule', function (myModule, p, deps) {
   'use strict';
   buster.testCase('helloWorld test', {
