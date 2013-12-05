@@ -17,8 +17,14 @@ An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
 - [Why build it?](#why)
 
 <a name="demo"/>
-## Demo
+## Demo and more fun
 Have a look at the demo over at: https://github.com/christianalfoni/module-loader-tdd-demo . It shows a complete project setup with client, server and Buster JS.
+
+**I strongly** urge you to have a look at the following Grunt plugin:
+https://github.com/christianalfoni/grunt-buster-tdd
+
+It will help you get going with the TDD process on your client code.
+
 
 ##### Latest version: 1.7 (Seems stable, need more testing though)
 
