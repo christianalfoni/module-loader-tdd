@@ -61,7 +61,7 @@ and/or HTML content can be displayed while loading the scripts.
 Pass two arguments to the create method. A name for the module, which can contain any character, and a function. 
 The returned value from the function will be available to other modules.
 
-	```javascript
+```javascript
 	// FILE: logger.js
 	modules.create('logger', function () {
   		'use strict';
@@ -71,7 +71,7 @@ The returned value from the function will be available to other modules.
     		}
   		};
 	});
-	```
+```
 	
 > **TIP:** Use namespace to divide your modules. E.g. **modules.create('helper.logger'...** or 
 **modules.create('model.Todo'...**
@@ -80,7 +80,7 @@ The returned value from the function will be available to other modules.
 ### Adding dependencies
 The first argument passed to your module function is *require*. Use it to fetch other modules defined. 
 
-	```javascript
+```javascript
 	// FILE: helloWorld.js
 	modules.create('helloWorld', function (require) {
   		'use strict';
@@ -91,7 +91,7 @@ The first argument passed to your module function is *require*. Use it to fetch 
     		}
   		};
 	});
-	```
+```
 	
 > Even if **helloWorld.js** is loaded after **logger.js** it will still work.
 
@@ -101,23 +101,23 @@ The second argument passed is an object of private methods. These methods are no
 during testing of the module. This gives you a clear definition of which methods are public and which are private
 to the module.
 
-	```javascript
+```javascript
 	// FILE: helloWorld.js
-		modules.create('helloWorld', function (require, p) {
-  			'use strict';
-  			var logger = require('logger');
+	modules.create('helloWorld', function (require, p) {
+  		'use strict';
+  		var logger = require('logger');
 
-  			p.sayToWorld = function (say) {
+  		p.sayToWorld = function (say) {
       			return say + ' world!';
-  			};
+  		};
   
-  			return {
+  		return {
     			hello: function () {
       				logger.log(p.sayToWorld('Hello'));
     			}
-  			};
-		});
-	```
+  		};
+	});
+```
 	
 **Why create these private methods?** When developing test-driven and functional, a core concept is creating small input-output
 functions that are easily testable. You normally do not want to expose these methods to the rest of the application.
@@ -125,7 +125,7 @@ By using a "module-context" these private methods can be exposed only during tes
 
 The argument passed to the module function is also available in the execution context itself. An alternative convention on defining privates can be done by replacing the privates object, which has to be done like this:
 
-	```javascript
+```javascript
 	modules.create('helloWorld', function (require) {
   		'use strict';
   		var logger = require('logger');
@@ -133,24 +133,24 @@ The argument passed to the module function is also available in the execution co
   		// The p variable lets you point to the privates 
   		// from any public method, or other private method
   		var p = this.privates = { 
-    		sayToWorld: function (say) {
-      			return say + ' world!';
-    		}
+    			sayToWorld: function (say) {
+      				return say + ' world!';
+    			}
  	 	};
   
   		return {
-    		hello: function () {
-      			logger.log(p.sayToWorld('Hello'));
-    		}
+    			hello: function () {
+      				logger.log(p.sayToWorld('Hello'));
+    			}
   		};
 	});
-	```
+```
 	
 <a name="templates"></a>
 ### Adding templates
 The second argument passed to the module, *require*, also has its own method **template**. Currently it only supports **Handlebars**. Use it to require a template from a */templates* path or a predefined path.
 
-	```javascript
+```javascript
 	// FILE: helloWorld.js
 	modules.create('helloWorld', function (require, p, requireTemplate) {
   		'use strict';
@@ -163,14 +163,14 @@ The second argument passed to the module, *require*, also has its own method **t
    			}
   		};
 	});
-	```
+```
 	
 > You can configure the template directory, take a look at "Initializing the project"
 
 <a name="init"></a>
 ### Initializing the project
 
-	```html
+```html
 	<!-- FILE: index.html -->
 	<!DOCTYPE html>
 	<html>
@@ -189,7 +189,7 @@ The second argument passed to the module, *require*, also has its own method **t
     		</script>
   		</body>
 	</html>
-	````
+````
 	
 >**Note** that in production all the modules will be concatinated and optimized into one single javascript file, 
 avoiding any unneccesary fetching of files.
@@ -213,7 +213,7 @@ to isolate the test to only the module and not trigger code that should be teste
 Any required templates will not be fetched, it will return an empty string, as you will be testing the code that puts content into your HTML, not the HTML itself.
 
 
-	```javascript
+```javascript
 	// FILE: helloWorld-test.js
 	modules.test('helloWorld', function (helloWorld, p, deps) {
   		'use strict';
@@ -241,7 +241,7 @@ Any required templates will not be fetched, it will return an empty string, as y
     		}
   		});
 	});
-	```
+```
 	
 <a name="creating_node"></a>
 ### Creating a module with Node js
@@ -251,7 +251,7 @@ Since Node JS already has a *require* function and a convention for loading file
 
 The *require.template* method is not implemented on Node JS as you normally do not load templates directly and Node JS is not only web related.
 
-	```javascript
+```javascript
 	// FILE: mainModule.js
 	modules.create(function (require, p) {
   		'use strict';
@@ -268,7 +268,7 @@ The *require.template* method is not implemented on Node JS as you normally do n
     		}
   		};
 	});
-	```
+```
 	
 > **NOTE** That if a dependency returns an empty object you have probably forgotten to use the passed *require* function. Modules required with Node JS global *require* will not be registered and handled by **module-loader-tdd**
 
@@ -276,19 +276,19 @@ The *require.template* method is not implemented on Node JS as you normally do n
 ### Initializing the modules
 In your main .js file for the Node project, add the following:
 
-	```javascript
+```javascript
 	require('module-loader-tdd'); // Will add "modules" to the global scope
 	modules.initialize(function (require) {
   		var module = require('./main');
   		module.log();
 	});
 
-	```
+```
 <a name="testing_node"></a>
 ### Testing Node JS modules
 There is little difference in testing a Node JS module.
 
-	```javascript
+```javascript
 	// FILE: myModule-test.js
 	require('module-loader-tdd');
 
@@ -302,7 +302,7 @@ There is little difference in testing a Node JS module.
       			}
   			}
 		});
-	```
+```
 <a name="why"></a>
 ## Why build it?
 
