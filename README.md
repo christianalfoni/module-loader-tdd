@@ -1,6 +1,7 @@
 module-loader-tdd
 =================
-An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
+An easy to use and easy to test module loader
+
 ### Table of contents
 - [Install](#install)
 - [The spec](#spec)
@@ -8,6 +9,7 @@ An easy to use and easy to test module loader. **EXPERIMENTAL VERSION**.
 - [Adding dependencies](#deps)
 - [Templates](#templates)
 - [Adding private methods](#privates)
+- [Using resources](#resources)
 - [Initializing](#init)
 - [Testing a module](#testing)
 - [Node: Creating a module](#creating_node)
@@ -21,8 +23,14 @@ https://github.com/christianalfoni/grunt-tdd
 
 The module-loader-tdd is built to more easily test code and **grunt-tdd** will help you get going with that.
 
-#### Warning
-Latest version has changed the API. No third argument **requireTemplate**, but extended **require** with **require.template** instead.
+### CHANGE LOG
+
+2.0.1:
+
+- Added resources (see tutorial below)
+- No timeout, but dependency tracking instead
+- modules.initialize callback will be called on DOMContentLoaded, does not matter when initialize is called anymore
+- Added configurable compiled Handlebar templates property
 
 <a name="install"></a>
 ## Install
@@ -95,6 +103,28 @@ The first argument passed to your module function is *require*. Use it to fetch 
 	
 > Even if **helloWorld.js** is loaded after **logger.js** it will still work.
 
+<a name="templates"></a>
+### Adding templates
+The second argument passed to the module, *require*, also has its own method **template**. Currently it only supports **Handlebars**. Use it to require a template from a */templates* path or a predefined path.
+
+```javascript
+	// FILE: helloWorld.js
+	modules.create('helloWorld', function (require, p) {
+  		'use strict';
+  		var logger = require('logger'),
+   		template = require.template('message');
+  		return {
+   			hello: function () {
+   				logger.log('Hello world!');
+   				document.body.innerHMTL = template({ content: 'Hello world!' });
+   			}
+  		};
+	});
+```
+
+> You can configure the template directory, take a look at "Initializing the project"
+
+
 <a name="privates"></a>
 ### Creating private methods
 The second argument passed is an object of private methods. These methods are not exposed, but will be
@@ -145,27 +175,71 @@ The argument passed to the module function is also available in the execution co
   		};
 	});
 ```
-	
-<a name="templates"></a>
-### Adding templates
-The second argument passed to the module, *require*, also has its own method **template**. Currently it only supports **Handlebars**. Use it to require a template from a */templates* path or a predefined path.
+<a name="resources"></a>
+### Handling resources
+In large projects it is often necessary to share certain resources. This could be configurations, a user, language resources or
+maybe some items from a collection.
+
+Instead of loading this as a direct dependency it can be loaded as a resource instead. A resource is event-based, meaning that
+the module just shouts out "I want this", and it is up to something else to listen to the request and handle it. This makes it
+a lot easier to test your code. You can register resources specifically for your tests, instead of loading a dependency.
 
 ```javascript
 	// FILE: helloWorld.js
-	modules.create('helloWorld', function (require, p, requireTemplate) {
+	modules.create('helloWorld', function (require, p, resource) {
   		'use strict';
-  		var logger = require('logger'),
-   		template = require.template('message');
+  		var logger = require('logger');
   		return {
-   			hello: function () {
-   				logger.log('Hello world!');
-   				document.body.innerHMTL = template({ content: 'Hello world!' });
-   			}
+    		hello: function () {
+    		    var user = resource.fetch('user');
+      			logger.log(user.name + ' says: Hello world!');
+    		}
   		};
 	});
 ```
-	
-> You can configure the template directory, take a look at "Initializing the project"
+
+```javascript
+	// FILE: user.js
+	modules.create('user', function (require, p, resource) {
+  		'use strict';
+  		var user = {
+  		    name: 'Bubba'
+  		};
+  		resource.register('user', function () {
+  		    return user;
+  		});
+  		return {};
+	});
+```
+
+The registered resource can return anything. If the resource requires server connection it is possible to return a promise
+instead, or a callback.
+
+```javascript
+	// FILE: helloWorld.js
+	modules.create('helloWorld', function (require, p, resource) {
+  		'use strict';
+  		var logger = require('logger');
+  		return {
+    		hello: function () {
+    		    var user = resource.fetch('user', function (user) {
+    		        logger.log(user.name + ' says: Hello world!');
+    		    });
+    		}
+  		};
+	});
+```
+
+```javascript
+	// FILE: user.js
+	modules.create('user', function (require, p, resource) {
+  		'use strict';
+  		resource.register('user', function (callback) {
+  		    $.get('/user', callback);
+  		});
+  		return {};
+	});
+```
 
 <a name="init"></a>
 ### Initializing the project
@@ -182,6 +256,7 @@ The second argument passed to the module, *require*, also has its own method **t
     		<script src="src/myDep.js"></script>
     		<script>
       			modules.templatesPath = 'src/templates/'; // Sets the path to the templates, default is 'templates/'
+      			modules.templates = 'JST'; // Sets the global property where templates will be when compiled
       			modules.initialize(function (require) {
          			var helloWorld = require('helloWorld');
          			helloWorld.hello(); // -> Hello world!
@@ -215,9 +290,19 @@ Any required templates will not be fetched, it will return an empty string, as y
 
 ```javascript
 	// FILE: helloWorld-test.js
-	modules.test('helloWorld', function (helloWorld, p, deps) {
+	modules.test('helloWorld', function (helloWorld, p, deps, resource) {
   		'use strict';
   		buster.testCase('helloWorld test', {
+  		    setUp: function () {
+  		        resource.register('user', function () {
+  		            return {
+  		                name: 'bilbo'
+  		            };
+  		        };
+  		    },
+  		    tearDown: function () {
+  		        resource.remove('user');
+  		    },
     		'hello()': {
       			'is a function': function () {
         			assert.isFunction(helloWorld.hello);
@@ -227,7 +312,7 @@ Any required templates will not be fetched, it will return an empty string, as y
         			// Deps are stubbed methods (Sinon JS), which lets us verify their usage
         			// without actually executing the code
         			assert(deps.logger.log.calledOnce); // Has the log method been called?
-        			assert(deps.logger.log.calledWith('Hello world!')); // Was it called with the expected message?
+        			assert(deps.logger.log.calledWith('bilbo says: Hello world!')); // Was it called with the expected message?
      			 }
     		},
     		'p.sayToWorld()': {
