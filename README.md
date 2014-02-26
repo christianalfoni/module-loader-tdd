@@ -176,13 +176,13 @@ The argument passed to the module function is also available in the execution co
 	});
 ```
 <a name="resources"></a>
-### Handling resources
+### Using resources
 In large projects it is often necessary to share certain resources. This could be configurations, a user, language resources or
 maybe some items from a collection.
 
-Instead of loading this as a direct dependency it can be loaded as a resource instead. A resource is event-based, meaning that
-the module just shouts out "I want this", and it is up to something else to listen to the request and handle it. This makes it
-a lot easier to test your code. You can register resources specifically for your tests, instead of loading a dependency.
+Instead of loading this as a direct dependency it can be loaded as a resource instead. A resource is kinda event-based, meaning that
+the module just shouts out "I want this", and it is up to something else to have registered a handler for it. This makes it
+easier to test your code and it decreases the magnitude of your dependencies.
 
 ```javascript
 	// FILE: helloWorld.js

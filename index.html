@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<script src="lib/module-loader-tdd.js"></script>
+<script src="lib/module-loader-tdd.min.js"></script>
 <script>
 
     modules.initialize(function (require) {
@@ -17,13 +17,13 @@
     modules.create('test', function (require, p, resource) {
         require('bah');
         var test = resource.fetch('config', 'hm');
-        console.log(test);
         return {};
     });
 
     modules.create('bah', function (require, p, resource) {
+
         resource.register('config', function () {
-            return 'hihi';
+            return 'foo';
         });
         return {};
     });
